@@ -1,14 +1,28 @@
-/* same key as sell side handle io */
-normalised-out-tkn-amount: get(0x469017709316f7f258096e4e2ac47b89e1a104ffa810dcd5c906f95726cdbf78),
-normalised-in-reserve-amount: get(0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197),
+out-tkn-amount: get(0x469017709316f7f258096e4e2ac47b89e1a104ffa810dcd5c906f95726cdbf78),
+in-tkn-amount: get(0x10b2c7dd2f0c383e8445066430f62720e189027b16a56ad4212eefac8e6c77ed),
+buyback-tkn-amount: saturating-sub(out-tkn-amount in-tkn-amount),
+
+in-reserve-amount: get(0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197),
+out-reserve-amount: get(0xf1c2eb58238d7f8a14e41d826612621aace3c0329f0b1c963912f844470a44b4),
+buyback-reserve-budget: saturating-sub(in-reserve-amount out-reserve-amount),
 
 amount io-ratio: infinity prb-mul(
-  99e16
-  prb-div(normalised-in-reserve-amount normalised-out-tkn-amount)
+  101e16
+  prb-div(buyback-reserve-budget buyback-tkn-amount)
 );
+
+out-reserve-amount: context<2 4>(),
+out-reserve-decimals: context<2 1>(),
+/* round up how much reserve we've sent */
+normalised-out-reserve-amount: scale-18-dynamic<1>(out-reserve-decimals out-reserve-amount),
+total-out-reserve-k: 0xf1c2eb58238d7f8a14e41d826612621aace3c0329f0b1c963912f844470a44b4,
+:set(total-out-reserve-k
+  add(get(total-out-reserve-k) normalised-out-reserve-amount)),
 
 in-tkn-amount: context<2 4>(),
 in-tkn-decimals: context<2 1>(),
 /* round down how much reserve we've received for conservative buy offers */
 normalised-in-tkn-amount: scale-18-dynamic<0>(in-tkn-decimals in-tkn-amount),
-:set(0x10b2c7dd2f0c383e8445066430f62720e189027b16a56ad4212eefac8e6c77ed normalised-in-tkn-amount);
+total-in-tkn-k: 0x10b2c7dd2f0c383e8445066430f62720e189027b16a56ad4212eefac8e6c77ed,
+:set(total-in-tkn-k
+  add(get(total-in-tkn-k) normalised-in-tkn-amount));

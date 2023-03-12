@@ -32,10 +32,16 @@ out-tkn-amount: context<3 4>(),
 out-tkn-decimals: context<3 1>(),
 /* round up how much tkn we've sent out for conservative buy offers */
 normalised-out-tkn-amount: scale-18-dynamic<1>(out-tkn-decimals out-tkn-amount),
-:set(0x469017709316f7f258096e4e2ac47b89e1a104ffa810dcd5c906f95726cdbf78 normalised-out-tkn-amount),
+total-out-token-k: 0x469017709316f7f258096e4e2ac47b89e1a104ffa810dcd5c906f95726cdbf78,
+:set(
+  total-out-token-k
+  add(get(total-out-token-k) normalised-out-tkn-amount)),
 
 in-reserve-amount: context<2 4>(),
 in-reserve-decimals: context<2 1>(),
 /* round down how much reserve we've received for conservative buy offers */
 normalised-in-reserve-amount: scale-18-dynamic<0>(in-reserve-decimals in-reserve-amount),
-:set(0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197 normalised-in-reserve-amount);
+total-in-reserve-k: 0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197,
+:set(
+  total-in-reserve-k
+  add(get(total-in-reserve-k) normalised-in-reserve-amount));

@@ -1,0 +1,41 @@
+start-time: 1678633592,
+/* enforce start time */
+:ensure(gt(now() start-time)),
+/* 18 months */
+end-time: 1726153578,
+completion: sub(
+  1e18
+  prb-div(
+    saturating-sub(end-time now())
+    sub(end-time start-time))),
+
+/* 100 mill */
+normalised-initial-tkn-amount: 100e24,
+/* openssl 32 random bytes */
+/* must match the buy side tracking */
+normalised-in-tkn-amount: get(0x10b2c7dd2f0c383e8445066430f62720e189027b16a56ad4212eefac8e6c77ed),
+total-tkn-amount: add(normalised-initial-tkn-amount normalised-in-tkn-amount),
+
+/* 30 mill */
+start-mc: 30e24,
+/* 125 mill */
+end-mc: 125e24,
+current-mc: add(start-mc prb-mul(completion sub(end-mc start-mc))),
+/* not a real address, random atm */
+tkn-address: 0x07a1324b9d7d845f8fc143338e3f90e0808ab531,
+tkn-supply: erc-20-total-supply(tkn-address),
+
+max-amount: prb-mul(completion total-tkn-amount),
+io-ratio: prb-div(current-mc tkn-supply);
+
+out-tkn-amount: context<3 4>(),
+out-tkn-decimals: context<3 1>(),
+/* round up how much tkn we've sent out for conservative buy offers */
+normalised-out-tkn-amount: scale-18-dynamic<1>(out-tkn-decimals out-tkn-amount),
+:set(0x469017709316f7f258096e4e2ac47b89e1a104ffa810dcd5c906f95726cdbf78 normalised-out-tkn-amount),
+
+in-reserve-amount: context<2 4>(),
+in-reserve-decimals: context<2 1>(),
+/* round down how much reserve we've received for conservative buy offers */
+normalised-in-reserve-amount: scale-18-dynamic<0>(in-reserve-decimals in-reserve-amount),
+:set(0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197 normalised-in-reserve-amount);

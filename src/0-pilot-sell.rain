@@ -3,7 +3,7 @@ start-time: 1678633592,
 :ensure(gt(now() start-time)),
 /* 18 months */
 end-time: 1726153578,
-completion: sub(
+completion: saturating-sub(
   1e18
   prb-div(
     saturating-sub(end-time now())

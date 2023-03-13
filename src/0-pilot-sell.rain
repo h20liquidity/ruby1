@@ -44,4 +44,17 @@ normalised-in-reserve-amount: scale-18-dynamic<0>(in-reserve-decimals in-reserve
 total-in-reserve-k: 0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0dbf197,
 :set(
   total-in-reserve-k
-  add(get(total-in-reserve-k) normalised-in-reserve-amount));
+  add(get(total-in-reserve-k) normalised-in-reserve-amount)),
+
+/* base expenses needed for operations before buyback */
+/* 5 mill */
+base-expenses:5e24,
+total-out-reserve-k: 0xf1c2eb58238d7f8a14e41d826612621aace3c0329f0b1c963912f844470a44b4,
+total-out-reserve-amount: get(total-out-reserve-k),
+:set(
+  total-out-reserve-k
+  max(
+    total-out-reserve-amount
+    min(
+      base-expenses
+      add(normalised-in-reserve-amount total-out-reserve-amount))));

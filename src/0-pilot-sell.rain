@@ -18,13 +18,14 @@ total-tkn-amount: add(normalised-initial-tkn-amount normalised-in-tkn-amount),
 
 /* 30 mill */
 start-mc: 30e24,
-/* 125 mill */
-end-mc: 125e24,
+/* 100 mill */
+end-mc: 100e24,
 current-mc: add(start-mc prb-mul(completion sub(end-mc start-mc))),
 /* not a real address, random atm */
 tkn-address: 0x07a1324b9d7d845f8fc143338e3f90e0808ab531,
 tkn-supply: erc-20-total-supply(tkn-address),
 
+/* @todo factor in already sent token */
 max-amount: prb-mul(completion total-tkn-amount),
 io-ratio: prb-div(current-mc tkn-supply);
 
@@ -48,6 +49,8 @@ total-in-reserve-k: 0x9ab12bc4bd54bd37acb958637d7fe14ddeef508ad5d626b50af490dad0
 
 /* base expenses needed for operations before buyback */
 /* 5 mill */
+/* @todo remove the tkn that was sold for base expenses from the amount that
+we're willing to buyback */
 base-expenses:5e24,
 total-out-reserve-k: 0xf1c2eb58238d7f8a14e41d826612621aace3c0329f0b1c963912f844470a44b4,
 total-out-reserve-amount: get(total-out-reserve-k),
